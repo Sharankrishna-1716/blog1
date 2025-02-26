@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogging Platform</title>
+  <link rel="stylesheet" href="frontend.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>Blogging Platform</h1>
+      <p>Welcome to your personal blogging space! Create, edit, delete, and comment on posts.</p>
+    </header>
+    
+    <!-- Add Post Section -->
+    <div class="add-post">
+      <h2>Create New Post</h2>
+      <textarea id="newPost" placeholder="Write a new blog post..."></textarea>
+      <button onclick="addPost()">Publish Post</button>
+    </div>
+
+    <!-- Blog Posts List -->
+    <div id="postList" class="post-list">
+      <!-- Blog posts will appear here dynamically -->
+    </div>
+  </div>
+
+  <script>
+    // Function to add a new blog post
+    function addPost() {
+      const postContent = document.getElementById('newPost').value;
+      if (postContent.trim() === '') return;
+
+      const postId = Date.now();
+      const timestamp = new Date().toLocaleString();
+      const postHTML = `
+        <div class="post-card" id="post-${postId}">
+          <div class="post-header">
+            <span class="post-timestamp">${timestamp}</span>
+            <button class="edit-btn" onclick="editPost(${postId})">Edit</button>
+            <button class="delete-btn" onclick="deletePost(${postId})">Delete</button>
+          </div>
+          <div class="post-content">
+            <p>${postContent}</p>
+          </div>
+          <div class="comments-section">
+            <h3>Comments</h3>
+            <textarea class="comment-input" placeholder="Add a comment" id="comment-${postId}"></textarea>
+            <button onclick="addComment(${postId})">Add Comment</button>
+            <div class="comments" id="comments-${postId}">
+              <!-- Comments will appear here -->
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('postList').insertAdjacentHTML('beforeend', postHTML);
+      document.getElementById('newPost').value = ''; // Clear the textarea
+    }
+
+    // Function to edit a post
+    function editPost(postId) {
+      const postContent = document.getElementById(`post-${postId}`).querySelector('.post-content p');
+      const newContent = prompt('Edit your post:', postContent.textContent);
+      if (newContent !== null && newContent.trim() !== '') {
+        postContent.textContent = newContent;
+      }
+    }
+
+    // Function to delete a post
+    function deletePost(postId) {
+      document.getElementById(`post-${postId}`).remove();
+    }
+
+    // Function to add a comment to a post
+    function addComment(postId) {
+      const commentInput = document.getElementById(`comment-${postId}`);
+      const commentText = commentInput.value.trim();
+      if (commentText === '') return;
+
+      const username = prompt("Enter your name:");
+      if (username && username.trim() !== "") {
+        const commentHTML = `
+          <div class="comment">
+            <strong>${username}:</strong> ${commentText}
+          </div>
+        `;
+        document.getElementById(`comments-${postId}`).insertAdjacentHTML('beforeend', commentHTML);
+        commentInput.value = ''; // Clear the comment input field
+      }
+    }
+  </script>
+</body>
+</html>
